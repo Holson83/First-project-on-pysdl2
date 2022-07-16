@@ -1,3 +1,4 @@
+from struct import Struct
 import time
 import sdl2.ext
 import sdl2
@@ -62,9 +63,14 @@ class Circle(object):
     def __init__(self, centre: Point2d, radius: float):
         self.centre = centre
         self.radius = radius
+        self.velocity = Velocity()
 
     def __str__(self):
         return '{}, {}'.format(self.centre, self.radius)
+
+    def move(self, dt: float):
+        self.centre.x += self.velocity.vx * dt
+        self.centre.y += self.velocity.vy * dt
 
 
 class Canvas:
@@ -73,7 +79,7 @@ class Canvas:
 
     def __init__(self, width: int, height: int):
         self.__window = sdl2.ext.Window("Hello World!", size=(width, height), flags=(sdl2.SDL_WINDOW_SHOWN |
-                                                                                     sdl2.SDL_WINDOW_RESIZABLE))
+                                                                                    sdl2.SDL_WINDOW_RESIZABLE))
         self.__renderer = sdl2.ext.renderer.Renderer(self.__window)
 
     def update(self):
@@ -84,7 +90,7 @@ class Canvas:
 
     def fill(self, color: sdl2.ext.color.Color):
         self.__renderer.clear(color)
-    
+
     def point2d_draw(self, point: Point2d, color: sdl2.ext.color.Color):
         self.__renderer.draw_point([(point.x, point.y)], color)
 
@@ -110,7 +116,6 @@ class Canvas:
         #    p.y += 1
         #    p.x = top_left.x
 
-
     def circle_color(self, circle: Circle, color: sdl2.ext.color.Color):
         height = circle.radius * 2
         width = circle.radius * 2
@@ -118,47 +123,51 @@ class Canvas:
         dx = circle.radius - width
         dy = circle.radius - height
 
-        if((dx * dx + dy * dy) <= circle.radius * circle.radius):
-            self.__renderer.draw_circle([circle.center.x, circle.center.y], color)
+        for dy in range(-circle.radius, circle.radius + 1):
+            for dx in range(-circle.radius, circle.radius + 1):
+                if(dx * dx + dy * dy < circle.radius * circle.radius):
+                    p = Point2d(circle.centre.x + dx, circle.centre.y + dy)
+                    self.point2d_draw(p, color)
 
-    #def line_draw(self, line: Line, color: sdl2.ext.color.Color):
-    #    if (line.start.x <= line.end.x):
-    #        start = line.start
-    #        end = line.end
-    #    else:
-    #        start = line.end
-    #        end = line.start
 
-    #    p = start
-    #    while p.x < end.x:
-    #        self.point2d_draw(p, color)
-    #        p1 = Point2d(p.x, p.y + 1)
-    #        p2 = Point2d(p.x + 1, p.y)
-    #        p3 = Point2d(p.x, p.y - 1)
-    #        t1 = abs((end.y - start.y) * p1.x - (end.x - start.x) * p1.y + 
-    #        end.x * start.y - end.y * start.x)
-    #        t2 = abs((end.y - start.y) * p2.x - (end.x - start.x) * p2.y + 
-    #        end.x * start.y - end.y * start.x)
-    #        t3 = abs((end.y - start.y) * p3.x - (end.x - start.x) * p3.y + 
-    #        end.x * start.y - end.y * start.x)
+    def line_draw(self, line: Line, color: sdl2.ext.color.Color):
+        if (line.start.x <= line.end.x):
+            start = line.start
+            end = line.end
+        else:
+            start = line.end
+            end = line.start
 
-    #        if t1 < t2:
-    #            if t1 < t3:
-    #                p = p1
-    #            else:
-    #                p = p3
-    #        else:
-    #            if t2 <= t3:
-    #                p = p2
-    #            else:
-    #                p = p3
+        p = start
+        while p.x < end.x:
+            self.point2d_draw(p, color)
+            p1 = Point2d(p.x, p.y + 1)
+            p2 = Point2d(p.x + 1, p.y)
+            p3 = Point2d(p.x, p.y - 1)
+            t1 = abs((end.y - start.y) * p1.x - (end.x - start.x) * p1.y +
+            end.x * start.y - end.y * start.x)
+            t2 = abs((end.y - start.y) * p2.x - (end.x - start.x) * p2.y +
+            end.x * start.y - end.y * start.x)
+            t3 = abs((end.y - start.y) * p3.x - (end.x - start.x) * p3.y +
+            end.x * start.y - end.y * start.x)
 
-    #    y = min(p.y, end.y)
-    #    end.y = max(p.y, end.y)
-    #    p.y = y
-    #    while p.y <= end.y:
-    #        self.point2d_draw(p, color)
-    #        p.y += 1
+            if t1 < t2:
+                if t1 < t3:
+                    p = p1
+                else:
+                    p = p3
+            else:
+                if t2 <= t3:
+                    p = p2
+                else:
+                    p = p3
+
+        y = min(p.y, end.y)
+        end.y = max(p.y, end.y)
+        p.y = y
+        while p.y <= end.y:
+            self.point2d_draw(p, color)
+            p.y += 1
 
 
 def main():
@@ -169,16 +178,10 @@ def main():
         canvas = Canvas(640, 480)
 
         rect = Rectangle(Point2d(100, 80), Point2d(200, 160))
-        #circle = Circle(Point2d(100, 100), radius = 10)
+        circle = Circle(Point2d(100, 100), radius = 50)
 
         rect.velocity.vx = 200
         rect.velocity.vy = 100
-
-        #canvas.pixel_color(Point2d(20, 50), sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
-
-        #canvas.line_draw(Line(Point2d(80, 90), Point2d(300, 100)), sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
-
-        #canvas.circle_color(Circle(Point2d(100, 100), rad = 10), sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
 
         canvas.update()
 
@@ -193,19 +196,22 @@ def main():
                     break
 
             rect.move(dt)
-            if (rect.bottom_right.y >= window_height and rect.velocity.vy > 0):
+            if (rect.bottom_right.y >= window_height and
+                rect.velocity.vy > 0):
                 rect.velocity.vy *= -1
-            if (rect.bottom_right.x >= window_width and rect.velocity.vx > 0):
+            if (rect.bottom_right.x >= window_width and
+                rect.velocity.vx > 0):
                 rect.velocity.vx *= -1
             if (rect.top_left.y <= 0 and rect.velocity.vy < 0):
                 rect.velocity.vy *= -1
             if (rect.top_left.x <= 0 and rect.velocity.vx < 0):
                 rect.velocity.vx *= -1
 
-            canvas.fill(sdl2.ext.color.Color(r=0, g=0, b=0, a=255))  
-            
+            canvas.fill(sdl2.ext.color.Color(r=0, g=0, b=0, a=255))
+
+            #canvas.pixel_color(Point2d(20, 50), sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
             canvas.rect_draw(rect, sdl2.ext.color.Color(r=255, g=165, b=0, a=255))
-            #canvas.circle_color(circle, sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
+            canvas.circle_color(circle, sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
             #canvas.line_draw(Line(Point2d(80, 90), Point2d(300, 100)), sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
 
             canvas.update()
@@ -217,4 +223,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
