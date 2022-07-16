@@ -1,11 +1,12 @@
 from physics import Velocity
 
 
-class Point2d(object):
+class Point2d:
     x: float
     y: float
 
     def __init__(self, x, y):
+        super().__init__()
         self.x = x
         self.y = y
 
@@ -13,11 +14,12 @@ class Point2d(object):
         return '({}, {})'.format(self.x, self.y)
 
 
-class Line(object):
+class Line:
     start: Point2d
     end: Point2d
 
     def __init__(self, start: Point2d, end: Point2d):
+        super().__init__()
         self.start = start
         self.end = end
 
@@ -25,12 +27,13 @@ class Line(object):
         return '({}, {})'.format(self.start, self.end)
 
 
-class Rectangle(object):
+class Rectangle:
     top_left: Point2d
     bottom_right: Point2d
     velocity: Velocity
 
     def __init__(self, top_left: Point2d, bottom_right: Point2d):
+        super().__init__()
         self.top_left = top_left
         self.bottom_right = bottom_right
         self.velocity = Velocity()
@@ -45,11 +48,12 @@ class Rectangle(object):
         self.bottom_right.y += self.velocity.vy * dt
 
 
-class Circle(object):
+class Circle:
     centre: Point2d
     radius: float
 
     def __init__(self, centre: Point2d, radius: float):
+        super().__init__()
         self.centre = centre
         self.radius = radius
         self.velocity = Velocity()
