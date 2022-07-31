@@ -1,3 +1,4 @@
+from turtle import title
 from geometry import Point2d, Line, Rectangle, Circle
 import time
 import sdl2.ext
@@ -10,8 +11,9 @@ class Canvas:
     __renderer:  sdl2.ext.renderer.Renderer
 
     def __init__(self, width: int, height: int):
-        self.__window = sdl2.ext.Window("Hello World!", size=(width, height), flags=(sdl2.SDL_WINDOW_SHOWN |
-                                                                                    sdl2.SDL_WINDOW_RESIZABLE))
+        self.__window = sdl2.ext.Window("Hello World!", size=(width, height),
+                                        flags=(sdl2.SDL_WINDOW_SHOWN |
+                                               sdl2.SDL_WINDOW_RESIZABLE))
         self.__renderer = sdl2.ext.renderer.Renderer(self.__window)
 
     def update(self):
@@ -30,23 +32,28 @@ class Canvas:
         width = rect.bottom_right.x - rect.top_left.x
         height = rect.bottom_right.y - rect.top_left.y
 
-        self.__renderer.fill([(rect.top_left.x, rect.top_left.y, width, height)], color)
+        self.__renderer.fill(
+            [(rect.top_left.x, rect.top_left.y, width, height)], color)
 
-        #if (rect.top_left.x <= rect.bottom_right.x):
-        #    top_left = rect.top_left
-        #    bottom_right = rect.bottom_right
-        #else:
-        #    top_left = rect.bottom_right
-        #    bottom_right = rect.top_left
+    #def rect_draw2(self, rect: Rectangle, color: sdl2.ext.color.Color):
+    #    width = rect.bottom_right.x - rect.top_left.x
+    #    height = rect.bottom_right.y - rect.top_left.y
 
-        #p = copy.copy(top_left)
-        #while p.y <= bottom_right.y:
-        #    while p.x <= bottom_right.x:
-        #        self.point2d_draw(p, color)
-        #        p.x += 1
+    #    if (rect.top_left.x <= rect.bottom_right.x):
+    #        top_left = rect.top_left
+    #        bottom_right = rect.bottom_right
+    #    else:
+    #        top_left = rect.bottom_right
+    #        bottom_right = rect.top_left
 
-        #    p.y += 1
-        #    p.x = top_left.x
+    #    p = copy.copy(top_left)
+    #    while p.y <= bottom_right.y:
+    #        while p.x <= bottom_right.x:
+    #            self.point2d_draw(p, color)
+    #            p.x += 1
+
+    #        p.y += 1
+    #        p.x = top_left.x
 
     def circle_color(self, circle: Circle, color: sdl2.ext.color.Color):
         height = circle.radius * 2
@@ -100,3 +107,6 @@ class Canvas:
         while p.y <= end.y:
             self.point2d_draw(p, color)
             p.y += 1
+
+    def title(self, title): 
+        self.__window.title = title
