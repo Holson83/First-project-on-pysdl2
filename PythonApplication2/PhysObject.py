@@ -14,7 +14,7 @@ class Vector2d(Point2d):
         return '({}, {})'.format(self.x, self.y)
 
 
-#class Line:
+#class Phys_Line:
 #    start: Point2d
 #    end: Point2d
 
