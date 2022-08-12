@@ -10,24 +10,23 @@ import copy
 
 def main():
     try:
-        #window_height = 480
-        #window_width = 640
-        left_boundary = 480
-        right_boundary = 480
-        top_boundary = 640
-        bottom_boundary = 640
+        Universe.left_boundary = 0
+        Universe.right_boundary = 640
+        Universe.top_boundary = 0
+        Universe.bottom_boundary = 480
 
         sdl2.ext.init()
         canvas = Canvas(640, 480)
         rect_1 = Phys_Rectangle(Point2d(200, 0), Point2d(300, 80))
-        circle = Phys_Circle(Point2d(300, 100), radius = 50)
-        #rect_1 == rect
-        #rect_2 == rect
+        circle_1 = Phys_Circle(Point2d(300, 100), radius = 50)
+        circle_2 = Phys_Circle(Point2d(100, 100), radius = 20)
 
         rect_1.velocity.vx = 200
         rect_1.velocity.vy = 100
-        circle.velocity.vx = 100
-        circle.velocity.vy = 200
+        circle_1.velocity.vx = 200
+        circle_1.velocity.vy = 100
+        circle_2.velocity.vx = 100
+        circle_2.velocity.vy = 200
 
         canvas.update()
 
@@ -43,14 +42,14 @@ def main():
                 if event.type == sdl2.SDL_QUIT:
                     running  = False
                     break
-        
+
             rect_1.move(dt)
-            if (rect_1.bottom_right.y >= left_boundary and
-                right_boundary and
+            if (rect_1.bottom_right.y >= Universe.left_boundary and
+                Universe.right_boundary and
                 rect_1.velocity.vy > 0):
                 rect_1.velocity.vy *= -1
-            if (rect_1.bottom_right.x >= top_boundary and
-                bottom_boundary and
+            if (rect_1.bottom_right.x >= Universe.top_boundary and
+                Universe.bottom_boundary and
                 rect_1.velocity.vx > 0):
                 rect_1.velocity.vx *= -1
             if (rect_1.top_left.y <= 0 and rect_1.velocity.vy < 0):
@@ -58,19 +57,33 @@ def main():
             if (rect_1.top_left.x <= 0 and rect_1.velocity.vx < 0):
                 rect_1.velocity.vx *= -1
             
-            circle.move(dt)
-            if (circle.centre.x + circle.radius > right_boundary and
-                circle.velocity.vx > 0):
-                circle.velocity.vx *= -1
-            if (circle.centre.x - circle.radius < left_boundary and
-                circle.velocity.vx < 0):
-                circle.velocity.vx *= -1
-            if (circle.centre.y + circle.radius > bottom_boundary and
-                circle.velocity.vy > 0):
-                circle.velocity.vy *= -1
-            if (circle.centre.y - circle.radius < top_boundary and
-                circle.velocity.vy < 0):
-                circle.velocity.vy *= -1
+            circle_1.move(dt)
+            if (circle_1.centre.x + circle_1.radius > Universe.right_boundary and
+                circle_1.velocity.vx > 0):
+                circle_1.velocity.vx *= -1
+            if (circle_1.centre.x - circle_1.radius < Universe.left_boundary and
+                circle_1.velocity.vx < 0):
+                circle_1.velocity.vx *= -1
+            if (circle_1.centre.y + circle_1.radius > Universe.bottom_boundary and
+                circle_1.velocity.vy > 0):
+                circle_1.velocity.vy *= -1
+            if (circle_1.centre.y - circle_1.radius < Universe.top_boundary and
+                circle_1.velocity.vy < 0):
+                circle_1.velocity.vy *= -1
+            
+            circle_2.move(dt)
+            if (circle_2.centre.x + circle_2.radius > Universe.right_boundary and
+                circle_2.velocity.vx > 0):
+                circle_2.velocity.vx *= -1
+            if (circle_2.centre.x - circle_2.radius < Universe.left_boundary and
+                circle_2.velocity.vx < 0):
+                circle_2.velocity.vx *= -1
+            if (circle_2.centre.y + circle_2.radius > Universe.bottom_boundary and
+                circle_2.velocity.vy > 0):
+                circle_2.velocity.vy *= -1
+            if (circle_2.centre.y - circle_2.radius < Universe.top_boundary and
+                circle_2.velocity.vy < 0):
+                circle_2.velocity.vy *= -1
 
             canvas.fill(sdl2.ext.color.Color(r=0, g=0, b=0, a=255))
 
@@ -78,7 +91,9 @@ def main():
             #                   sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
             #canvas.rect_draw(rect_1,
             #                 sdl2.ext.color.Color(r=255, g=165, b=0, a=255))
-            canvas.circle_color(circle,
+            canvas.circle_color(circle_1,
+                                sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
+            canvas.circle_color(circle_2,
                                 sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
             #canvas.line_draw(Line(Point2d(80, 90), Point2d(300, 100)),
             #                 sdl2.ext.color.Color(r=255, g=0, b=0, a=255))
@@ -96,5 +111,7 @@ def main():
         sdl2.ext.quit()
 
 
+#import profile
 if __name__ == '__main__':
+    #profile.run('main()')
     main()

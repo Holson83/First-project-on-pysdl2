@@ -28,6 +28,11 @@ class Canvas:
     def point2d_draw(self, point: Point2d, color: sdl2.ext.color.Color):
         self.__renderer.draw_point([(point.x, point.y)], color)
 
+    def points_draw(self,
+                    points: list[tuple[float, float]],
+                    color: sdl2.ext.color.Color):
+        self.__renderer.draw_point(points, color)
+
     def rect_draw(self, rect: Rectangle, color: sdl2.ext.color.Color):
         width = rect.bottom_right.x - rect.top_left.x
         height = rect.bottom_right.y - rect.top_left.y
@@ -62,12 +67,12 @@ class Canvas:
         dx = circle.radius - width
         dy = circle.radius - height
 
+        points = list()
         for dy in range(-int(circle.radius), int(circle.radius + 1)):
             for dx in range(-int(circle.radius), int(circle.radius + 1)):
                 if(dx * dx + dy * dy < circle.radius * circle.radius):
-                    p = Point2d(circle.centre.x + dx, circle.centre.y + dy)
-                    self.point2d_draw(p, color)
-
+                    points.append((circle.centre.x + dx, circle.centre.y + dy))
+        self.points_draw(points, color)
 
     def line_draw(self, line: Line, color: sdl2.ext.color.Color):
         if (line.start.x <= line.end.x):
